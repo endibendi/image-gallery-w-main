@@ -1,0 +1,34 @@
+{
+  "galleryData": [
+    {
+      "title": "Everyday Flowers",
+      "author": "Johanna Hobel for vouge",
+      "date": "JUN 2019",
+      "image": "/images/image01@2x.jpg"
+    },
+    {
+      "title": "The wilder Night",
+      "author": "Johanna Hobel for WILD",
+      "date": "DEC 2019",
+      "image": "/images/image02@2x.jpg"
+    },
+    {
+      "title": "Smooth Memories",
+      "author": "Johanna Hobel for CHanel",
+      "date": "FEB 2020",
+      "image": "/images/image03@2x.jpg"
+    },
+    {
+      "title": "THE Future uInverse",
+      "author": "Johanna Hobel for ON",
+      "date": "APR 2020",
+      "image": "/images/image04@2x.jpg"
+    },
+    {
+      "title": "SHE Was Born Urban",
+      "author": "Johanna Hobel for SI",
+      "date": "DEc 2021",
+      "image": "/images/image04@2x.jpg"
+    }
+  ]
+}
