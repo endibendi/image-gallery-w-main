@@ -1,7 +1,7 @@
 import { NextSeo } from "next-seo";
 import { type NextPageWithLayout } from "~/pages/_app";
 import { DefaultPage } from "~/layouts/DefaultPage";
-import LogoSvg from "~/assets/logo.svg";
+import { GalleryPage } from "~/components/gallery-page";
 
 interface Props {}
 
@@ -9,8 +9,7 @@ const Index: NextPageWithLayout<Props> = () => {
   return (
     <>
       <NextSeo title="Index" />
-      <LogoSvg tw="w-256 h-256" />
-      <h1>Index</h1>
+      <GalleryPage />
     </>
   );
 };
