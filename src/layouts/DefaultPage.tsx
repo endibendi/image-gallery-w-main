@@ -5,5 +5,5 @@ interface Props {
 }
 
 export const DefaultPage = ({ children }: Props) => {
-  return <main tw="flex-1">{children}</main>;
+  return <main tw="flex-1 bg-[#303030]">{children}</main>;
 };

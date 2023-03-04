@@ -10,6 +10,7 @@ module.exports = {
     },
     fontFamily: {
       sans: ["Tungsten", ...defaultTheme.fontFamily.sans],
+      inter: ["Inter", ...defaultTheme.fontFamily.sans],
     },
     fontSize: {
       xs: [wildConfig.utils.pxRem(12), 1.5],

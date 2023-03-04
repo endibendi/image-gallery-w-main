@@ -42,6 +42,7 @@ const App = ({ Component, pageProps }: Props) => {
         <meta name="msapplication-TileColor" content="#000000" key="tile" />
         <meta name="theme-color" content="#ffffff" key="theme" />
         <link rel="manifest" href="/site.webmanifest" crossOrigin="use-credentials" />
+        <link rel="preload" href="/fonts/Inter-Regular.otf" as="font" type="font/otf" crossOrigin="anonymous" />
         <link
           rel="preload"
           href="/fonts/Tungsten/Tungsten-Semibold.woff"
