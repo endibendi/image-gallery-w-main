@@ -1,13 +1,14 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import tw, { styled } from "twin.macro";
+import { GalleryDataInterface } from "~/types/gallery-data";
 
 const ImageCard = styled.div`
-  ${tw`relative border border-black rounded-[10px] w-[248px] h-[320px] self-end overflow-hidden`}
+  ${tw`relative border border-black rounded-[10px] w-[248px] h-[320px] self-end overflow-hidden hover:cursor-pointer hover:scale-[1.005] transition-all`}
 `;
 
 const PhotoTitle = styled.span`
-  ${tw` text-[220px] leading-[176px] tracking-[0.04em] text-center`}
+  ${tw` text-[220px] leading-[176px] tracking-[0.04em] text-center min-w-[860px]`}
 `;
 
 const GhostPhotoTitle = styled(PhotoTitle)`
@@ -15,41 +16,43 @@ const GhostPhotoTitle = styled(PhotoTitle)`
   color: transparent;
 `;
 
-type GalleryData = {
-  title: string;
-  photographer: string;
-  client: string;
-  date: string;
-  image: string;
+type IndexIconProps = {
+  current: boolean;
 };
 
-export const GalleryPage = () => {
-  const [galleryItems, setGalleryItems] = useState<GalleryData[]>([]);
+const IndexIcon = styled.div<IndexIconProps>`
+  ${tw`border border-white w-[5px] h-8 mr-5 rounded-sm`}
+  background-color: ${(props) => (props.current ? "white" : "transparent")}
+`;
 
-  const currentItem = galleryItems[0];
-  const nextItem = galleryItems[1];
-  const prevItem = galleryItems[4];
+type Props = {
+  galleryItems: GalleryDataInterface[];
+};
 
-  useEffect(() => {
-    fetch("data.json", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((jsonData) => {
-        const data = jsonData.galleryData;
-        setGalleryItems(data);
-      });
-  }, []);
+export const GalleryPage = ({ galleryItems }: Props) => {
+  const [currentItem, setCurrentItem] = useState(0);
+
+  const nextItem = currentItem === galleryItems.length - 1 ? 0 : currentItem + 1;
+  const prevItem = currentItem === 0 ? galleryItems.length - 1 : currentItem - 1;
+
+  const prevItemImage = galleryItems[prevItem]?.image;
+  const nextItemImage = galleryItems[nextItem]?.image;
+  const currentItemImage = galleryItems[currentItem]?.image;
+
+  const onPrevClick = () => {
+    setCurrentItem(prevItem);
+  };
+
+  const onNextClick = () => {
+    setCurrentItem(nextItem);
+  };
 
   return (
     <div tw="relative w-screen h-screen overflow-hidden">
       <div
         tw="z-0 absolute w-[115%] h-[115%] -translate-y-1/2 -translate-x-1/2 inset-0 bg-center bg-no-repeat blur-[100px]"
         style={{
-          backgroundImage: `url(${currentItem?.image})`,
+          backgroundImage: `url(${galleryItems[currentItem]?.image})`,
           backgroundSize: "100%",
           top: "50%",
           left: "50%",
@@ -60,48 +63,49 @@ export const GalleryPage = () => {
         <div tw=" leading-[19px] tracking-[0.08em] z-10">XYZ Photography</div>
 
         <div tw="absolute p-16 top-0 left-0 right-0 bottom-0 max-h-screen grid grid-cols-3 overflow-hidden ">
-          {prevItem && (
-            <ImageCard>
-              <Image alt="" layout="fill" src={prevItem.image} />
+          {prevItemImage && (
+            <ImageCard onClick={onPrevClick}>
+              <Image alt="" layout="fill" src={prevItemImage} />
             </ImageCard>
           )}
 
           <div tw="relative z-[1] self-center place-self-center">
-            {currentItem && (
-              <ImageCard tw="w-[512px] h-[680px]">
-                <Image alt="" layout="fill" src={currentItem?.image} />
+            {currentItemImage && (
+              <ImageCard tw="w-[512px] h-[680px] hover:cursor-auto">
+                <Image alt="" layout="fill" src={currentItemImage} />
               </ImageCard>
             )}
 
             <div tw="absolute top-[-6px] left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center">
-              <GhostPhotoTitle>{currentItem?.title}</GhostPhotoTitle>
+              <GhostPhotoTitle>{galleryItems[currentItem]?.title}</GhostPhotoTitle>
             </div>
 
             <div tw="absolute top-0 left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center overflow-hidden">
-              <PhotoTitle>{currentItem?.title}</PhotoTitle>
+              <PhotoTitle>{galleryItems[currentItem]?.title}</PhotoTitle>
               <div tw="flex items-center">
                 <span tw="font-inter text-[10px] leading-5 tracking-[0.08em] mr-15">1 of 5</span>
-                {galleryItems.map((galleryItem, index) => (
-                  <div key={index} tw="border border-white w-[5px] h-8 mr-5 rounded-sm" />
+
+                {galleryItems.map(({ id }) => (
+                  <IndexIcon key={id} current={id === galleryItems[currentItem]?.id} />
                 ))}
               </div>
             </div>
           </div>
 
           <div tw="justify-self-end flex flex-col justify-between">
-            {nextItem && (
-              <ImageCard>
-                <Image alt="" layout="fill" src={nextItem.image} />
+            {nextItemImage && (
+              <ImageCard onClick={onNextClick}>
+                <Image alt="" layout="fill" src={nextItemImage} />
               </ImageCard>
             )}
 
-            <div tw="mb-[77px] flex flex-col gap-10 max-w-[109px] font-inter  text-[10px] leading-5 tracking-[0.08em]">
-              <div tw="">
-                <div>{currentItem?.photographer}</div>
-                <div>for {currentItem?.client}</div>
+            <div tw="mb-[77px] flex flex-col gap-10 max-w-[109px] font-inter text-[10px] leading-5 tracking-[0.08em]">
+              <div>
+                <div>{galleryItems[currentItem]?.photographer}</div>
+                <div>for {galleryItems[currentItem]?.client}</div>
               </div>
-              <div tw="text-right">{currentItem?.date}</div>
-              <button tw="text-black  px-10 pt-6 pb-5 bg-white hover:bg-opacity-50 transition-all rounded-3xl font-bold">
+              <div tw="text-right">{galleryItems[currentItem]?.date}</div>
+              <button tw="text-black px-10 pt-6 pb-5 bg-white hover:bg-opacity-50 transition-all rounded-3xl font-bold">
                 Have a look
               </button>
             </div>

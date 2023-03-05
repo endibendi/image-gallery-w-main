@@ -1,6 +1,7 @@
 {
   "galleryData": [
     {
+      "id": 1,
       "title": "Everyday Flowers",
       "photographer": "Johanna Hobel",
       "client": "vouge",
@@ -8,6 +9,7 @@
       "image": "/images/image01@2x.jpg"
     },
     {
+      "id": 2,
       "title": "The wilder Night",
       "photographer": "Johanna Hobel",
       "client": "WILD",
@@ -15,6 +17,7 @@
       "image": "/images/image02@2x.jpg"
     },
     {
+      "id": 3,
       "title": "Smooth Memories",
       "photographer": "Johanna Hobel",
       "client": "CHanel",
@@ -22,6 +25,7 @@
       "image": "/images/image03@2x.jpg"
     },
     {
+      "id": 4,
       "title": "THE Future uInverse",
       "photographer": "Johanna Hobel",
       "client": "ON",
@@ -29,6 +33,7 @@
       "image": "/images/image04@2x.jpg"
     },
     {
+      "id": 5,
       "title": "SHE Was Born Urban",
       "photographer": "Johanna Hobel",
       "client": "SI",
