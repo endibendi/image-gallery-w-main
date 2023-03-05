@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import tw, { styled } from "twin.macro";
+import { motion } from "framer-motion";
 import { GalleryDataInterface } from "~/types/gallery-data";
 
 const ImageCard = styled.div`
@@ -31,6 +32,7 @@ type Props = {
 
 export const GalleryPage = ({ galleryItems }: Props) => {
   const [currentItem, setCurrentItem] = useState(0);
+  const [isHandlingWheel, setIsHandlingWheel] = useState(false);
 
   const nextItem = currentItem === galleryItems.length - 1 ? 0 : currentItem + 1;
   const prevItem = currentItem === 0 ? galleryItems.length - 1 : currentItem - 1;
@@ -47,20 +49,41 @@ export const GalleryPage = ({ galleryItems }: Props) => {
     setCurrentItem(nextItem);
   };
 
+  const handleWheel = (e: { deltaY: number }) => {
+    if (!isHandlingWheel) {
+      setIsHandlingWheel(true);
+      if (e.deltaY > 0) {
+        setCurrentItem(nextItem);
+      } else {
+        setCurrentItem(prevItem);
+      }
+
+      setTimeout(() => {
+        setIsHandlingWheel(false);
+      }, 300); // set scroll delay
+    }
+  };
+
   return (
-    <div tw="relative w-screen h-screen overflow-hidden">
-      <div
-        tw="z-0 absolute w-[115%] h-[115%] -translate-y-1/2 -translate-x-1/2 inset-0 bg-center bg-no-repeat blur-[100px]"
-        style={{
-          backgroundImage: `url(${galleryItems[currentItem]?.image})`,
-          backgroundSize: "100%",
-          top: "50%",
-          left: "50%",
-        }}
-      />
+    <div tw="relative w-screen h-screen overflow-hidden" onWheel={handleWheel}>
+      {currentItemImage && (
+        <motion.div
+          key={currentItem}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          tw="z-0 absolute w-[115%] h-[115%] -translate-y-1/2 -translate-x-1/2 inset-0 bg-center bg-no-repeat blur-[100px]"
+          style={{
+            backgroundImage: `url(${currentItemImage})`,
+            backgroundSize: "100%",
+            top: "50%",
+            left: "50%",
+          }}
+        />
+      )}
 
       <div tw="absolute top-0 left-0 right-0 bottom-0 z-10 p-16 text-white uppercase w-screen h-screen">
-        <div tw=" leading-[19px] tracking-[0.08em] z-10">XYZ Photography</div>
+        <div tw="leading-[19px] tracking-[0.08em] z-10">XYZ Photography</div>
 
         <div tw="absolute p-16 top-0 left-0 right-0 bottom-0 max-h-screen grid grid-cols-3 overflow-hidden ">
           {prevItemImage && (
@@ -79,11 +102,10 @@ export const GalleryPage = ({ galleryItems }: Props) => {
             <div tw="absolute top-[-6px] left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center">
               <GhostPhotoTitle>{galleryItems[currentItem]?.title}</GhostPhotoTitle>
             </div>
-
             <div tw="absolute top-0 left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center overflow-hidden">
               <PhotoTitle>{galleryItems[currentItem]?.title}</PhotoTitle>
               <div tw="flex items-center">
-                <span tw="font-inter text-[10px] leading-5 tracking-[0.08em] mr-15">1 of 5</span>
+                <span tw="font-inter text-[10px] leading-5 tracking-[0.08em] mr-15">{`${galleryItems[currentItem]?.id} of ${galleryItems.length}`}</span>
 
                 {galleryItems.map(({ id }) => (
                   <IndexIcon key={id} current={id === galleryItems[currentItem]?.id} />
