@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import tw, { styled } from "twin.macro";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { GalleryDataInterface } from "~/types/gallery-data";
 
 const ImageCard = styled(motion.div)`
@@ -35,24 +35,24 @@ export const GalleryPage = ({ galleryItems }: Props) => {
   const [isHandlingWheel, setIsHandlingWheel] = useState(false);
 
   const backgroundAnimation = {
-    initial: { opacity: 0 },
+    initial: { opacity: 0.5 },
     animate: { opacity: 1 },
-    exit: { opacity: 0 },
-    transition: { duration: 1 },
+    exit: { opacity: 0.5 },
+    transition: { duration: 0.5 },
   };
 
   const imageAnimation = {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     exit: { opacity: 0 },
-    transition: { duration: 0.7 },
+    transition: { duration: 0.5 },
   };
 
   const textAnimation = {
     initial: { opacity: 0, y: "-20%" },
     animate: { opacity: 1, y: "0%" },
-    exit: { opacity: 0 },
-    transition: { duration: 1 },
+    exit: { opacity: 0, y: "20%" },
+    transition: { duration: 0.5 },
   };
 
   const nextItem = currentItem === galleryItems.length - 1 ? 0 : currentItem + 1;
@@ -81,7 +81,7 @@ export const GalleryPage = ({ galleryItems }: Props) => {
 
       setTimeout(() => {
         setIsHandlingWheel(false);
-      }, 300); // set scroll delay
+      }, 1000); // set scroll delay, needs to be as long as the animation, to not be able to trigger it. breaks initial state: https://github.com/framer/motion/issues/380
     }
   };
 
@@ -119,14 +119,18 @@ export const GalleryPage = ({ galleryItems }: Props) => {
             )}
 
             <div tw="absolute top-[-6px] left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center">
-              <GhostPhotoTitle key={currentItem} {...textAnimation}>
-                {galleryItems[currentItem]?.title}
-              </GhostPhotoTitle>
+              <AnimatePresence mode="wait">
+                <GhostPhotoTitle key={currentItem} {...textAnimation}>
+                  {galleryItems[currentItem]?.title}
+                </GhostPhotoTitle>
+              </AnimatePresence>
             </div>
             <div tw="absolute top-0 left-1/2 -translate-x-1/2 h-full w-full flex flex-col justify-center items-center overflow-hidden">
-              <PhotoTitle key={currentItem} {...textAnimation}>
-                {galleryItems[currentItem]?.title}
-              </PhotoTitle>
+              <AnimatePresence mode="wait">
+                <PhotoTitle key={currentItem} {...textAnimation}>
+                  {galleryItems[currentItem]?.title}
+                </PhotoTitle>
+              </AnimatePresence>
               <div tw="flex items-center">
                 <span tw="font-inter text-[10px] leading-5 tracking-[0.08em] mr-15">{`${galleryItems[currentItem]?.id} of ${galleryItems.length}`}</span>
 
