@@ -1,13 +1,23 @@
 import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
+import { styled } from "twin.macro";
 import { type NextPageWithLayout } from "~/pages/_app";
 import { DefaultPage } from "~/layouts/DefaultPage";
 import { GalleryPage } from "~/components/gallery-page";
 import { GalleryDataInterface } from "~/types/gallery-data";
 
+interface LoadingWrapperProps {
+  isLoading: boolean;
+}
+
+const LoadingWrapper = styled.div<LoadingWrapperProps>`
+  cursor: ${(props) => (props.isLoading ? "url('/svg/cursor.svg'), auto" : "auto")};
+`;
+
 interface Props {}
 
 const Index: NextPageWithLayout<Props> = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [galleryItems, setGalleryItems] = useState<GalleryDataInterface[]>([]);
 
   useEffect(() => {
@@ -21,13 +31,22 @@ const Index: NextPageWithLayout<Props> = () => {
       .then((jsonData) => {
         const data = jsonData.galleryData;
         setGalleryItems(data);
+        setIsLoading(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
       });
   }, []);
 
   return (
     <>
-      <NextSeo title="Index" />
-      {galleryItems && <GalleryPage galleryItems={galleryItems} />}
+      <LoadingWrapper isLoading={isLoading}>
+        <NextSeo title="Index" />
+        {!isLoading && <GalleryPage galleryItems={galleryItems} />}
+      </LoadingWrapper>
     </>
   );
 };
